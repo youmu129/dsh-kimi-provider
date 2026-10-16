@@ -1,0 +1,23 @@
+# Bundle layer of dsh-kimi-provider (v0.1.0).
+#
+# 本插件不拥有 `llm-pi-ai` 行：patch 按 id 定位行、整行替换 `config`，
+# 多个 bundle 的 providers 无法在 patch 层合并（见 dsh-plugin-raven v0.5.0
+# 机制说明）。改为插入本插件自身的挂载行，宿主半面（src/index.ts）双职责：
+# 1. 播种：启动 settle 后经 settings 服务把 kimi-coding-plan 路由合并进
+#    用户层 profile patch——与 Web Models 页「自定义模型 API」同一条写入
+#    路径（按 provider 键合并，不整段覆盖）。路由定义迁自
+#    dsh-plugin-custom-providers 的 kimi-coding-plan 段，两插件互不接触，
+#    层序不敏感；
+# 2. 用量 API：经 DSH 凭证机制按 apiKeyEnv 引用名解析 Kimi Console Key，
+#    直连 api.kimi.com 套餐用量端点，经 /api/kimi-usage/* 供给 client
+#    半面的底部用量 pill（conversation.composer.dock）。
+#
+# 凭证不落此文件：路由经 apiKeyEnv 引用 KIMI_CODING_PLAN_API_KEY，由
+# harness 凭证机制按请求解析。
+- insert:
+    - id: dsh-kimi-provider
+      name: 'dsh-kimi-provider'
+      config:
+        usage:
+          pollIntervalMs: 0
+          requestTimeoutMs: 10000

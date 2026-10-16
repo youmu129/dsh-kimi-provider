@@ -1,0 +1,4 @@
+# esbuild（tsdown 传递依赖）的构建脚本已审：允许执行。
+# pnpm ≥11 起该设置只认本文件（package.json 的 pnpm 字段已废弃）。
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,48 @@
+{
+  "name": "dsh-kimi-provider",
+  "version": "0.1.0",
+  "description": "DSH plugin (dual-half): seeds the kimi-coding-plan provider (Kimi Coding Plan, Moonshot AI OpenAI-compatible coding endpoint) into the llm-pi-ai user settings layer at boot, and ships a Web GUI usage pill (conversation.composer.dock) backed by /api/kimi-usage/* — 5h-window/weekly quotas plus the monthly total quota, fetched from api.kimi.com with the Console key resolved via the DSH credential seam.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "cordis.patch.yml",
+    "lib"
+  ],
+  "keywords": [
+    "dsh-plugin"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsdown && node scripts/wrap-client.mjs",
+    "dev": "tsdown --watch",
+    "dev:client": "node scripts/wrap-client.mjs --watch",
+    "test": "node --import tsx test/run-all.ts"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.4"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsdown": "^0.23.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

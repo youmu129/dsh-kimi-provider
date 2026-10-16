@@ -2,3 +2,4 @@
 // 这里直接 import 各测试模块，node:test 会在进程退出前自动执行。
 import './seed.test.ts'
 import './kimi.test.ts'
+import './locale.test.ts'

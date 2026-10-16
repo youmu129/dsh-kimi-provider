@@ -10,7 +10,7 @@ DSH（DeepSeek Harness）插件：为 Web GUI 接入 Kimi Coding Plan（月之�
 ## 用法
 
 ```powershell
-dsh plugin --profile web add ./dsh-kimi-provider
+dsh plugin --profile web add https://github.com/youmu129/dsh-kimi-provider
 ```
 
 1. 配置凭证：在设置页录入 Kimi Console Key（`sk-` 前缀，与模型推理同一把），或设置环境变量 `KIMI_CODING_PLAN_API_KEY`；

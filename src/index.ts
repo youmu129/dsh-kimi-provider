@@ -88,7 +88,7 @@ const PROFILE: SeedProfile = {
     },
     {
       id: 'kimi-for-coding',
-      name: 'Kimi-K2.8',
+      name: 'Kimi-K2.8-Preview',
       contextWindow: 1048576,
       input: ['text', 'image'],
       reasoningEfforts: { off: null, low: 'low', high: 'high', max: 'max' },

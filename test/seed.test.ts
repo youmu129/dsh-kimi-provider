@@ -30,7 +30,7 @@ test('seed profile satisfies the hand-declared route requirements', () => {
   }
 })
 
-test('seed profile matches the kimi-coding-plan definition in dsh-plugin-custom-providers', () => {
+test('seed profile matches the kimi-coding-plan baseline plus the K3.1 Pro series', () => {
   // 迁移基准：repos/dsh-plugin-custom-providers/cordis.patch.yml 的 kimi-coding-plan 段
   const profile = seedProfile()
   assert.equal(profile.displayName, 'Kimi Coding Plan')
@@ -40,17 +40,28 @@ test('seed profile matches the kimi-coding-plan definition in dsh-plugin-custom-
   assert.equal(profile.reasoning, 'max')
   assert.deepEqual(
     profile.models.map((m) => m.id),
-    ['k3-256k', 'k3', 'kimi-for-coding'],
+    ['k3.1-pro', 'k3.1-pro-highspeed', 'k3-256k', 'k3', 'kimi-for-coding'],
   )
-  assert.deepEqual(profile.models[0].name, 'Kimi-K3-256k')
-  assert.equal(profile.models[0].contextWindow, 262144)
-  // 基准定义的 `off:` 空值 = 等级存在、线上不发送（llm-pi-ai 认可的写法）
-  assert.deepEqual(profile.models[0].reasoningEfforts, { off: null, low: 'low', high: 'high', max: 'max' })
-  assert.deepEqual(profile.models[0].input, ['text', 'image'])
-  assert.deepEqual(profile.models[1].input, ['text', 'image'])
-  assert.deepEqual(profile.models[2].input, ['text', 'image'])
   // 基准定义带 compat 段（与 zhipu 不同），迁移保持一致
   assert.deepEqual(profile.compat, { supportsDeveloperRole: false, maxTokensField: 'max_tokens' })
+
+  const baseline = profile.models.filter((m) => !m.id.startsWith('k3.1'))
+  assert.deepEqual(baseline.map((m) => m.name), ['Kimi-K3-256k', 'Kimi-K3', 'Kimi-K2.8-Preview'])
+  assert.deepEqual(baseline.map((m) => m.contextWindow), [262144, 1048576, 1048576])
+  for (const model of baseline) {
+    // 基准定义的 `off:` 空值 = 等级存在、线上不发送（llm-pi-ai 认可的写法）
+    assert.deepEqual(model.reasoningEfforts, { off: null, low: 'low', high: 'high', max: 'max' })
+    assert.deepEqual(model.input, ['text', 'image'])
+  }
+
+  // K3.1 Pro 系列：1M 上下文，只支持思考模式（关闭思考的请求被 400 拒绝 → 无 off 等级）
+  const k31 = profile.models.filter((m) => m.id.startsWith('k3.1'))
+  assert.deepEqual(k31.map((m) => m.name), ['Kimi-K3.1-Pro', 'Kimi-K3.1-Pro-Highspeed'])
+  for (const model of k31) {
+    assert.equal(model.contextWindow, 1048576)
+    assert.deepEqual(model.reasoningEfforts, { low: 'low', high: 'high', max: 'max' })
+    assert.deepEqual(model.input, ['text', 'image'])
+  }
 })
 
 test('patch inserts own row and never targets the llm-pi-ai row', () => {

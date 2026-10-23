@@ -12,8 +12,9 @@
 // 禁用本挂载行（disabled: true）。
 //
 // provider 定义迁自 dsh-plugin-custom-providers 的 cordis.patch.yml
-// kimi-coding-plan 段，逐字段一致（含 compat 段；`off:` 空值是
-// llm-pi-ai 认可的「等级存在、线上不发送」写法）。
+// kimi-coding-plan 段（含 compat 段；`off:` 空值是 llm-pi-ai 认可的
+// 「等级存在、线上不发送」写法），并按 Kimi 官方规格补入 K3.1 Pro 系列
+// 两个模型——该系列只支持思考模式，故不声明 off 等级。
 //
 // 已知代价（与用户手动使用一次 Models 页相同）：播种会把当时生效的
 // providers 全量快照进用户层；此后其他 bundle 层对该字典的更新被这份
@@ -60,7 +61,11 @@ interface SeedProfile {
   models: SeedModel[]
 }
 
-/** The kimi-coding-plan route (migrated verbatim from dsh-plugin-custom-providers, compat section included). */
+/**
+ * The kimi-coding-plan route: three models migrated verbatim from
+ * dsh-plugin-custom-providers (compat section included), plus the K3.1 Pro
+ * series the provider later released.
+ */
 const PROFILE: SeedProfile = {
   displayName: 'Kimi Coding Plan',
   apiKeyEnv: 'KIMI_CODING_PLAN_API_KEY',
@@ -72,6 +77,21 @@ const PROFILE: SeedProfile = {
     maxTokensField: 'max_tokens',
   },
   models: [
+    // K3.1 Pro 系列只支持思考模式：关闭思考的请求被 400 拒绝，故不声明 off 等级
+    {
+      id: 'k3.1-pro',
+      name: 'Kimi-K3.1-Pro',
+      contextWindow: 1048576,
+      input: ['text', 'image'],
+      reasoningEfforts: { low: 'low', high: 'high', max: 'max' },
+    },
+    {
+      id: 'k3.1-pro-highspeed',
+      name: 'Kimi-K3.1-Pro-Highspeed',
+      contextWindow: 1048576,
+      input: ['text', 'image'],
+      reasoningEfforts: { low: 'low', high: 'high', max: 'max' },
+    },
     {
       id: 'k3-256k',
       name: 'Kimi-K3-256k',
